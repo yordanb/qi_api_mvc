@@ -4,6 +4,10 @@ const { getSS, getSSStaffHandler, getSSMekanikHandler } = require('../controller
 const { getIpeak, getIpeakStaffHandler, getIpeakMekanikHandler } = require('../controllers/ipeakController');
 const router = express.Router();
 
+const authenticateToken = require('../middlewares/authMiddleware');
+// Terapkan middleware ke semua route berikutnya
+router.use(authenticateToken);
+
 router.get('/jarvis/:id', getJarvis);
 router.get('/jarvis-staff/:id', getJarvisStaffHandler);
 router.get('/jarvis-mech/:id', getJarvisMekanikHandler);
