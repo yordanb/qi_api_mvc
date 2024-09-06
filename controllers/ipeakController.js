@@ -33,8 +33,8 @@ async function getIpeakStaffHandler(req, res) {
     if (rows.data && rows.data.length > 0) {
       const response = rows.data.map((row, index) => ({
         //no: index + 1,
-        mp_nrp: row.mp_nrp,
-        mp_nama: row.mp_nama,
+        nrp: row.mp_nrp,
+        nama: row.mp_nama,
         JmlAkses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
       res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
@@ -53,8 +53,8 @@ async function getIpeakMekanikHandler(req, res) {
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
       const response = rows.data.map((row, index) => ({
-        mp_nrp: row.mp_nrp,
-        mp_nama: row.mp_nama,
+        nrp: row.mp_nrp,
+        nama: row.mp_nama,
         JmlAkses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
       res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });

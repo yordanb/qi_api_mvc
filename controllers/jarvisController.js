@@ -2,17 +2,25 @@ const { getJarvisById, getJarvisStaff, getJarvisMekanik } = require('../models/j
 const { formatTimestamp } = require('../utils/dateUtils');
 
 async function getJarvis(req, res) {
+  let name,nrp,jmlDoc,esictm;
   try {
     const rows = await getJarvisById(req.params.id);
-    if (rows.length > 0) {
-      const response = rows.map((row, index) => ({
-        nrp: row.NRP,
-        nama: capitalizeWords(row.Nama, capitalizeFirstLetter),
-        jmlDoc: row.JmlDoc,
-        esictm: row.ESIC,
-        namaDoc: row.NamaDoc.toLowerCase().split("\n")
+    let update = await formatTimestamp(rows.lastUpdate);
+    name = capitalizeWords(rows.data[0].Nama, capitalizeFirstLetter),
+    nrp = rows.data[0].NRP;
+    jmlDoc = rows.data[0].JmlDoc;
+    esictm = rows.data[0].ESIC;
+    if (rows.data && rows.data.length > 0) {
+      /*
+      const response = rows.data.NamaDoc.map((row, index) => ({
+        //nrp: row.data.NRP,
+        //nama: capitalizeWords(row.data.Nama, capitalizeFirstLetter),
+        //jmlDoc: row.data.JmlDoc,
+        //esictm: row.data.ESIC,
+        namaDoc: row.data.NamaDoc.toLowerCase().split("\n")
       }));
-      res.json({ status: 200, error: null, response });
+      */
+      res.json({ status: 200, error: null, nama: name, nrp: nrp, jmlDoc: jmlDoc +" doc", update: update});//, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -28,8 +36,8 @@ async function getJarvisStaffHandler(req, res) {
     if (rows.length > 0) {
       const response = rows.map((row, index) => ({
         no: index + 1,
-        mp_nrp: row.mp_nrp,
-        mp_nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
+        nrp: row.mp_nrp,
+        nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
         JmlDoc: row.JmlDoc,
       }));
       res.json({ status: 200, error: null, response });
@@ -48,8 +56,8 @@ async function getJarvisMekanikHandler(req, res) {
     if (rows.length > 0) {
       const response = rows.map((row, index) => ({
         no: index + 1,
-        mp_nrp: row.mp_nrp,
-        mp_nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
+        nrp: row.mp_nrp,
+        nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
         JmlDoc: row.JmlDoc,
       }));
       res.json({ status: 200, error: null, response });

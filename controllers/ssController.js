@@ -34,8 +34,8 @@ async function getSSStaffHandler(req, res) {
         let update = await formatTimestamp(rows.lastUpdate);
         if (rows.data && rows.data.length > 0) {
             const response = rows.data.map((row, index) => ({
-                mp_nrp: row.mp_nrp,
-                mp_nama: row.mp_nama,
+                nrp: row.mp_nrp,
+                nama: row.mp_nama,
                 JmlSS: row.JmlSS
             }));
 
@@ -55,8 +55,8 @@ async function getSSMekanikHandler(req, res) {
         let update = await formatTimestamp(rows.lastUpdate);
         if (rows.data && rows.data.length > 0) {
             const response = rows.data.map((row, index) => ({
-                mp_nrp: row.mp_nrp,
-                mp_nama: row.mp_nama,
+                nrp: row.mp_nrp,
+                nama: row.mp_nama,
                 JmlSS: row.JmlSS
             }));
 
