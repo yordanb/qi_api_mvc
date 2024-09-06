@@ -4,12 +4,12 @@ async function getSSById(id) {
   try {
     const [rows] = await pool.execute('SELECT * FROM tb_ssplt2 WHERE NRP = ?', [id]);
     //return rows;
-    const lastUpdate = await getLastUpdate(); //console.log(lastUpdate);
+    const lastUpdate = await getLastUpdate();
 
     const result = {
         lastUpdate: lastUpdate,
         data: rows
-    };
+    }; console.log(result);
 
     return result;
   } catch (error) {
@@ -27,7 +27,7 @@ async function getSSStaff(section) {
       COUNT(tb_ssplt2.NomorSS) AS "JmlSS" FROM db_qiagent.tb_manpower_new 
       left join db_qiagent.tb_ssplt2 on tb_manpower_new.NRP = tb_ssplt2.NRP 
       where tb_manpower_new.Posisi ="Staff" and tb_manpower_new.Status ="Aktif" and tb_manpower_new.Section=? GROUP by tb_manpower_new.Nama  ORDER BY COUNT(tb_ssplt2.NomorSS) ASC`, [section]);
-    const lastUpdate = await getLastUpdate(); //console.log(lastUpdate);
+    const lastUpdate = await getLastUpdate();
 
     const result = {
         lastUpdate: lastUpdate,

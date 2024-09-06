@@ -4,18 +4,17 @@ const { formatTimestamp } = require('../utils/dateUtils');
 async function getIpeak(req, res) {
     let name,nrp;
   try {
-    const rows = await getIpeakById(req.params.id);
-    if (rows.length > 0) {
-        name = rows[0].PencetusIde;
+    const rows = await getIpeakById(req.params.id); console.log(rows);
+    if (rows.data && rows.data.length > 0) {
+        name = rows.data[0].Nama;
         name = name.toLowerCase().split(' ').map(function(word) {
             return word.charAt(0).toUpperCase() + word.slice(1);
         }).join(' ');
-        nrp = rows[0].NRP;
-      const response = rows.map((row, index) => ({
+        nrp = rows.data[0].NRP;
+      const response = rows.data.map((row, index) => ({
         no: index + 1,
         judul: row.Judul,
-        create: row.TanggalLaporan,
-        status: row.KategoriSS
+        akses: formatTimestampX(row.DateAccess),
       }));
       res.json({ status: 200, error: null, nama: name, nrp: nrp, response });
     } else {
@@ -30,14 +29,15 @@ async function getIpeak(req, res) {
 async function getIpeakStaffHandler(req, res) {
   try {
     const rows = await getIpeakStaff(req.params.id);
-    if (rows.length > 0) {
-      const response = rows.map((row, index) => ({
-        no: index + 1,
+    let update = await formatTimestamp(rows.lastUpdate);
+    if (rows.data && rows.data.length > 0) {
+      const response = rows.data.map((row, index) => ({
+        //no: index + 1,
         mp_nrp: row.mp_nrp,
         mp_nama: row.mp_nama,
         JmlAkses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
-      res.json({ status: 200, error: null, response });
+      res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -50,14 +50,14 @@ async function getIpeakStaffHandler(req, res) {
 async function getIpeakMekanikHandler(req, res) {
   try {
     const rows = await getIpeakMekanik(req.params.id);
-    if (rows.length > 0) {
-      const response = rows.map((row, index) => ({
-        no: index + 1,
+    let update = await formatTimestamp(rows.lastUpdate);
+    if (rows.data && rows.data.length > 0) {
+      const response = rows.data.map((row, index) => ({
         mp_nrp: row.mp_nrp,
         mp_nama: row.mp_nama,
         JmlAkses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
-      res.json({ status: 200, error: null, response });
+      res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -65,6 +65,12 @@ async function getIpeakMekanikHandler(req, res) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+}
+
+function formatTimestampX(dateString) {
+  const date = new Date(dateString);
+  const options = { day: 'numeric', month: 'short', year: 'numeric' }; // Format hanya untuk tanggal
+  return date.toLocaleDateString('en-GB', options); // Menghasilkan "5 Aug 2024"
 }
 
 module.exports = {
