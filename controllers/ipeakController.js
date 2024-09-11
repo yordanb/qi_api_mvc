@@ -5,6 +5,7 @@ async function getIpeak(req, res) {
     let name,nrp;
   try {
     const rows = await getIpeakById(req.params.id); console.log(rows);
+    let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
         name = rows.data[0].Nama;
         name = name.toLowerCase().split(' ').map(function(word) {
@@ -16,7 +17,7 @@ async function getIpeak(req, res) {
         judul: row.Judul,
         akses: formatTimestampX(row.DateAccess),
       }));
-      res.json({ status: 200, error: null, nama: name, nrp: nrp, response });
+      res.json({ status: 200, error: null, nama: name, nrp: nrp, update: update, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -35,7 +36,7 @@ async function getIpeakStaffHandler(req, res) {
         //no: index + 1,
         nrp: row.mp_nrp,
         nama: row.mp_nama,
-        JmlAkses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
+        akses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
       res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
     } else {
@@ -55,7 +56,7 @@ async function getIpeakMekanikHandler(req, res) {
       const response = rows.data.map((row, index) => ({
         nrp: row.mp_nrp,
         nama: row.mp_nama,
-        JmlAkses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
+        akses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
       res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
     } else {

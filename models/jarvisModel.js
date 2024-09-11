@@ -2,13 +2,13 @@ const pool = require('../config/db');
 
 async function getJarvisById(id) {
   try {
-    const [rows] = await pool.execute('SELECT * FROM tb_esictm_plt2 WHERE NRP = ?', [id]); console.log;
+    const [rows] = await pool.execute('SELECT * FROM tb_esictm_plt2 WHERE NRP = ?', [id]); //console.log;
     const lastUpdate = await getLastUpdate();
 
     const result = {
         lastUpdate: lastUpdate,
         data: rows
-    }; console.log(result);
+    }; //console.log(result);
 
     return result;
   } catch (error) {

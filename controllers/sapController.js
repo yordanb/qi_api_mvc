@@ -1,22 +1,26 @@
-const { getSSById, getSSStaff, getSSMekanik } = require('../models/ssModel');
+const { getSAPById, getSAPStaff, getSAPMekanik } = require('../models/sapModel');
 const { formatTimestamp } = require('../utils/dateUtils');
 
-async function getSS(req, res) {
+async function getSAP(req, res) {
     let name,nrp;
   try {
-    const rows = await getSSById(req.params.id);
+    const rows = await getSAPById(req.params.id);
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
-        name = rows.data[0].PencetusIde;
+        name = rows.data[0].mp_nama;
         name = name.toLowerCase().split(' ').map(function(word) {
             return word.charAt(0).toUpperCase() + word.slice(1);
         }).join(' ');
-        nrp = rows.data[0].NRP;
+        nrp = rows.data[0].mp_nrp;
       const response = rows.data.map((row, index) => ({
-        //no: index + 1,
-        judul: row.Judul,
-        create: row.TanggalLaporan,
-        status: row.KategoriSS
+        hari_hadir: row.sap_hadir,
+        kta_acvh: row.KTAAcvh,
+        kta_comp: row.KTACompleted,
+        tta_acvh: row.TTAAcvh,
+        tta_comp: row.TTACompleted,
+        ta: row.TA,
+        ka: row.KA,
+        acvh_sap: row.AcvhSAP
       }));
       res.json({ status: 200, error: null, nama: name, nrp: nrp, update: update, response });
     } else {
@@ -28,15 +32,15 @@ async function getSS(req, res) {
   }
 }
 
-async function getSSStaffHandler(req, res) {
+async function getSAPStaffHandler(req, res) {
     try {
-        const rows = await getSSStaff(req.params.id); 
+        const rows = await getSAPStaff(req.params.id); 
         let update = await formatTimestamp(rows.lastUpdate);
         if (rows.data && rows.data.length > 0) {
             const response = rows.data.map((row, index) => ({
                 nrp: row.mp_nrp,
                 nama: row.mp_nama,
-                JmlSS: row.JmlSS
+                sap: row.AcvhSAP +" %"
             }));
 
             res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
@@ -49,15 +53,15 @@ async function getSSStaffHandler(req, res) {
     }
 }
 
-async function getSSMekanikHandler(req, res) {
+async function getSAPMekanikHandler(req, res) {
     try {
-        const rows = await getSSMekanik(req.params.id);
+        const rows = await getSAPMekanik(req.params.id);
         let update = await formatTimestamp(rows.lastUpdate);
         if (rows.data && rows.data.length > 0) {
             const response = rows.data.map((row, index) => ({
                 nrp: row.mp_nrp,
                 nama: row.mp_nama,
-                JmlSS: row.JmlSS
+                sap: row.AcvhSAP +" %"
             }));
 
             res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
@@ -71,7 +75,7 @@ async function getSSMekanikHandler(req, res) {
 }
 
 module.exports = {
-  getSS,
-  getSSStaffHandler,
-  getSSMekanikHandler,
+  getSAP,
+  getSAPStaffHandler,
+  getSAPMekanikHandler,
 };

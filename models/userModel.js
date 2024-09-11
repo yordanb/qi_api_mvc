@@ -1,10 +1,24 @@
 const pool = require('../config/db');
 
-async function getRoleByEmail(email) {
+async function getRoleByNRP(nrp,password) {
   try {
-    const [rows] = await pool.execute('SELECT * FROM tb_users WHERE email = ?', [email]);
-    if (rows.length > 0) {
-      return rows[0].Role;
+    const [rows] = await pool.execute(`SELECT * FROM tb_users WHERE nrp = ? AND password = ?`, [nrp,password]);
+    if (rows.length > 0){
+      //return rows[0].Role; 
+      return rows;
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function getRoleByDevID(devID) {
+  try {
+    const [rows] = await pool.execute(`SELECT * FROM tb_users WHERE DeviceID = ?`, [devID]);
+    if (rows.length > 0){
+      return rows;
     }
     return null;
   } catch (error) {
@@ -14,5 +28,6 @@ async function getRoleByEmail(email) {
 }
 
 module.exports = {
-  getRoleByEmail
+  getRoleByNRP,
+  getRoleByDevID
 };

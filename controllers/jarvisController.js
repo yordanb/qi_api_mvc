@@ -9,7 +9,6 @@ async function getJarvis(req, res) {
     name = capitalizeWords(rows.data[0].Nama, capitalizeFirstLetter),
     nrp = rows.data[0].NRP;
     jmlDoc = rows.data[0].JmlDoc;
-    esictm = rows.data[0].ESIC;
     if (rows.data && rows.data.length > 0) {
       /*
       const response = rows.data.NamaDoc.map((row, index) => ({
@@ -20,7 +19,7 @@ async function getJarvis(req, res) {
         namaDoc: row.data.NamaDoc.toLowerCase().split("\n")
       }));
       */
-      res.json({ status: 200, error: null, nama: name, nrp: nrp, jmlDoc: jmlDoc +" doc", update: update});//, response });
+      res.json({ status: 200, error: null, nama: name, nrp: nrp, update: update, doc: jmlDoc +" doc"});//, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -33,14 +32,14 @@ async function getJarvis(req, res) {
 async function getJarvisStaffHandler(req, res) {
   try {
     const rows = await getJarvisStaff(req.params.id); console.log(rows);
-    if (rows.length > 0) {
-      const response = rows.map((row, index) => ({
-        no: index + 1,
+    let update = await formatTimestamp(rows.lastUpdate);
+    if (rows.data && rows.data.length > 0) {
+      const response = rows.data.map((row, index) => ({
         nrp: row.mp_nrp,
         nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
-        JmlDoc: row.JmlDoc,
+        doc: row.JmlDoc === 0 ? 'belum akses' : row.JmlDoc + " doc"
       }));
-      res.json({ status: 200, error: null, response });
+      res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -53,14 +52,14 @@ async function getJarvisStaffHandler(req, res) {
 async function getJarvisMekanikHandler(req, res) {
   try {
     const rows = await getJarvisMekanik(req.params.id);
-    if (rows.length > 0) {
-      const response = rows.map((row, index) => ({
-        no: index + 1,
+    let update = await formatTimestamp(rows.lastUpdate);
+    if (rows.data && rows.data.length > 0) {
+      const response = rows.data.map((row, index) => ({
         nrp: row.mp_nrp,
         nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
-        JmlDoc: row.JmlDoc,
+        doc: row.JmlDoc === 0 ? 'belum akses' : row.JmlDoc + " doc",
       }));
-      res.json({ status: 200, error: null, response });
+      res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
