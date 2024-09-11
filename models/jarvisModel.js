@@ -19,19 +19,7 @@ async function getJarvisById(id) {
 
 async function getJarvisStaff(section) {
   try {
-    const [rows] = await pool.execute(`
-      SELECT tb_manpower_new.NRP as mp_nrp, 
-             tb_manpower_new.Nama as mp_nama, 
-             tb_manpower_new.Crew as mp_posisi, 
-             tb_esictm_plt2.JmlDoc as JmlDoc, 
-             tb_esictm_plt2.ESIC as esic_status  
-      FROM tb_manpower_new 
-      LEFT JOIN tb_esictm_plt2 
-      ON tb_manpower_new.NRP = tb_esictm_plt2.NRP 
-      WHERE tb_manpower_new.Posisi = "Staff" 
-      AND tb_manpower_new.Status = "Aktif" 
-      AND tb_manpower_new.Section = ? 
-      ORDER BY JmlDoc ASC`, [section]);
+    const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as mp_nrp, tb_manpower_new.Nama as mp_nama, tb_manpower_new.Crew as mp_posisi, tb_esictm_plt2.JmlDoc as JmlDoc, tb_esictm_plt2.ESIC as esic_status FROM tb_manpower_new LEFT JOIN tb_esictm_plt2 ON tb_manpower_new.NRP = tb_esictm_plt2.NRP WHERE tb_manpower_new.Posisi = "Staff" AND tb_manpower_new.Status = "Aktif" AND tb_manpower_new.Section = ? ORDER BY JmlDoc ASC`, [section]);
       const lastUpdate = await getLastUpdate();
 
       const result = {
@@ -67,20 +55,7 @@ async function getJarvisMekanik(id) {
       break;
 }
   try {
-    const [rows] = await pool.execute(`
-      SELECT tb_manpower_new.NRP as mp_nrp, 
-             tb_manpower_new.Nama as mp_nama, 
-             tb_manpower_new.Crew as mp_posisi, 
-             tb_esictm_plt2.JmlDoc as JmlDoc, 
-             tb_esictm_plt2.ESIC as esic_status  
-      FROM tb_manpower_new 
-      LEFT JOIN tb_esictm_plt2 
-      ON tb_manpower_new.NRP = tb_esictm_plt2.NRP 
-      WHERE tb_manpower_new.Posisi = "Mekanik" 
-      AND tb_manpower_new.Status = "Aktif" 
-      AND tb_manpower_new.Crew=?
-      AND tb_manpower_new.NRP NOT LIKE "MM%" 
-      ORDER BY JmlDoc ASC`, [section]); 
+    const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as mp_nrp, tb_manpower_new.Nama as mp_nama, tb_manpower_new.Crew as mp_posisi, tb_esictm_plt2.JmlDoc as JmlDoc, tb_esictm_plt2.ESIC as esic_status FROM tb_manpower_new LEFT JOIN tb_esictm_plt2 ON tb_manpower_new.NRP = tb_esictm_plt2.NRP WHERE tb_manpower_new.Posisi = "Mekanik" AND tb_manpower_new.Status = "Aktif" AND tb_manpower_new.Crew=? AND tb_manpower_new.NRP NOT LIKE "MM%" ORDER BY JmlDoc ASC`, [section]); 
       const lastUpdate = await getLastUpdate(); //console.log(lastUpdate);
 
       const result = {
@@ -114,8 +89,7 @@ async function getAcvhJarvisById(id) {
 
 async function getLastUpdate() {
   try {
-      const [dataUpdate] = await pool.execute(`
-          SELECT tb_esictm_plt2.Update FROM db_qiagent.tb_esictm_plt2 LIMIT 1`);
+      const [dataUpdate] = await pool.execute(`SELECT tb_esictm_plt2.Update FROM db_qiagent.tb_esictm_plt2 LIMIT 1`);
       return dataUpdate.length > 0 ? dataUpdate[0].Update : null;
   } catch (error) {
       console.error('Error fetching LastUpdate:', error);

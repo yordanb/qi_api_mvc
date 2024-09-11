@@ -77,7 +77,7 @@ const login = async (req, res) => {
             username: user.Nama,
             //role: user.Role,
             devID: user.DeviceID
-        };
+        }; console.log(payload);
 
         // Generate token
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' });

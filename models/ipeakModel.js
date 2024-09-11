@@ -19,11 +19,7 @@ async function getIpeakById(id) {
 
 async function getIpeakStaff(section) {
   try {
-    const [rows] = await pool.execute(`
-      SELECT tb_manpower_new.NRP as "mp_nrp",
-      tb_manpower_new.Nama as "mp_nama",
-      tb_manpower_new.Crew as "mp_crew",
-      COUNT(tb_ipeak.Nama) AS "FrekAkses" FROM db_qiagent.tb_manpower_new left join db_qiagent.tb_ipeak on tb_manpower_new.NRP = tb_ipeak.NRP where tb_manpower_new.Status ="Aktif" and tb_manpower_new.Posisi="Staff" and tb_manpower_new.Section = ? GROUP by tb_manpower_new.Nama  ORDER BY FrekAkses ASC`, [section]);
+    const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as "mp_nrp", tb_manpower_new.Nama as "mp_nama", tb_manpower_new.Crew as "mp_crew", COUNT(tb_ipeak.Nama) AS "FrekAkses" FROM db_qiagent.tb_manpower_new left join db_qiagent.tb_ipeak on tb_manpower_new.NRP = tb_ipeak.NRP where tb_manpower_new.Status ="Aktif" and tb_manpower_new.Posisi="Staff" and tb_manpower_new.Section = ? GROUP by tb_manpower_new.Nama  ORDER BY FrekAkses ASC`, [section]);
       const lastUpdate = await getLastUpdate(); 
 
       const result = {
@@ -57,12 +53,7 @@ async function getIpeakMekanik(id) {
       break;
 }
   try {
-    const [rows] = await pool.execute(`
-      SELECT tb_manpower_new.NRP as "mp_nrp",
-      tb_manpower_new.Nama as "mp_nama",
-      tb_manpower_new.Crew as "mp_crew",
-      COUNT(tb_ipeak.Nama) AS "FrekAkses" FROM db_qiagent.tb_manpower_new
-      left join db_qiagent.tb_ipeak on tb_manpower_new.NRP = tb_ipeak.NRP where tb_manpower_new.Status ="Aktif" and tb_manpower_new.NRP NOT LIKE "MM%" and tb_manpower_new.Posisi="Mekanik" and tb_manpower_new.Crew = ? GROUP by tb_manpower_new.Nama  ORDER BY FrekAkses ASC`, [section]);
+    const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as "mp_nrp", tb_manpower_new.Nama as "mp_nama", tb_manpower_new.Crew as "mp_crew", COUNT(tb_ipeak.Nama) AS "FrekAkses" FROM db_qiagent.tb_manpower_new left join db_qiagent.tb_ipeak on tb_manpower_new.NRP = tb_ipeak.NRP where tb_manpower_new.Status ="Aktif" and tb_manpower_new.NRP NOT LIKE "MM%" and tb_manpower_new.Posisi="Mekanik" and tb_manpower_new.Crew = ? GROUP by tb_manpower_new.Nama  ORDER BY FrekAkses ASC`, [section]);
       const lastUpdate = await getLastUpdate(); 
 
       const result = {

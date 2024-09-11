@@ -9,7 +9,7 @@ async function getSAPById(id) {
     const result = {
         lastUpdate: LastUpdate,
         data: rows
-    }; console.log(result);
+    }; //console.log(result);
 
     return result;
   } catch (error) {
@@ -20,21 +20,7 @@ async function getSAPById(id) {
 
 async function getSAPStaff(section) {
   try {
-    const [rows] = await pool.execute(`
-      SELECT tb_manpower_new.NRP as "mp_nrp", 
-      tb_manpower_new.Nama as "mp_nama", 
-      tb_manpower_new.Crew as "mp_crew", 
-      tb_sap_plt2.NRP as "sap_nrp", 
-      tb_sap_plt2.JumlahHariWajibHadirPerBulan as "sap_hadir",
-      tb_sap_plt2.CompletenessKTA as "KTAAcvh",
-      tb_sap_plt2.KTACompleted as "KTACompleted",
-      tb_sap_plt2.CompletenessTTA  as "TTAAcvh",
-      tb_sap_plt2.TTACompleted as "TTACompleted",
-      tb_sap_plt2.TindakanAman as "TA",
-      tb_sap_plt2.KondisiAman as "KA",
-      tb_sap_plt2.Ach_SAP as "AcvhSAP" FROM db_qiagent.tb_manpower_new 
-      LEFT JOIN db_qiagent.tb_sap_plt2 on tb_manpower_new.NRP = tb_sap_plt2.NRP 
-      WHERE tb_manpower_new.Posisi ="Staff" AND tb_manpower_new.Section =? AND tb_sap_plt2.NRP is not null order by AcvhSAP ASC`, [section]);
+    const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as "mp_nrp", tb_manpower_new.Nama as "mp_nama", tb_manpower_new.Crew as "mp_crew", tb_sap_plt2.NRP as "sap_nrp", tb_sap_plt2.JumlahHariWajibHadirPerBulan as "sap_hadir", tb_sap_plt2.CompletenessKTA as "KTAAcvh", tb_sap_plt2.KTACompleted as "KTACompleted", tb_sap_plt2.CompletenessTTA  as "TTAAcvh", tb_sap_plt2.TTACompleted as "TTACompleted", tb_sap_plt2.TindakanAman as "TA", tb_sap_plt2.KondisiAman as "KA", tb_sap_plt2.Ach_SAP as "AcvhSAP" FROM db_qiagent.tb_manpower_new LEFT JOIN db_qiagent.tb_sap_plt2 on tb_manpower_new.NRP = tb_sap_plt2.NRP WHERE tb_manpower_new.Posisi ="Staff" AND tb_manpower_new.Section =? AND tb_sap_plt2.NRP is not null order by AcvhSAP ASC`, [section]);
     const lastUpdate = await getLastUpdate();
 
     const result = {
@@ -69,20 +55,7 @@ async function getSAPMekanik(id) {
     }
 
   try {
-   const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as "mp_nrp",
-     tb_manpower_new.Nama as "mp_nama", 
-     tb_manpower_new.Crew as "mp_crew", 
-     tb_sap_plt2.NRP as "sap_nrp", 
-     tb_sap_plt2.JumlahHariWajibHadirPerBulan as "sap_hadir",
-     tb_sap_plt2.CompletenessKTA as "KTAAcvh",
-     tb_sap_plt2.KTACompleted as "KTACompleted",
-     tb_sap_plt2.CompletenessTTA  as "TTAAcvh",
-     tb_sap_plt2.TTACompleted as "TTACompleted",
-     tb_sap_plt2.TindakanAman as "TA",
-     tb_sap_plt2.KondisiAman as "KA",
-     tb_sap_plt2.Ach_SAP as "AcvhSAP" FROM db_qiagent.tb_manpower_new 
-     LEFT JOIN db_qiagent.tb_sap_plt2 on tb_manpower_new.NRP = tb_sap_plt2.NRP 
-     WHERE tb_manpower_new.Posisi ="Mekanik" AND tb_manpower_new.Crew =? AND tb_sap_plt2.NRP is not null order by AcvhSAP ASC`, [section]);
+   const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as "mp_nrp", tb_manpower_new.Nama as "mp_nama", tb_manpower_new.Crew as "mp_crew", tb_sap_plt2.NRP as "sap_nrp", tb_sap_plt2.JumlahHariWajibHadirPerBulan as "sap_hadir", tb_sap_plt2.CompletenessKTA as "KTAAcvh", tb_sap_plt2.KTACompleted as "KTACompleted", tb_sap_plt2.CompletenessTTA  as "TTAAcvh", tb_sap_plt2.TTACompleted as "TTACompleted", tb_sap_plt2.TindakanAman as "TA", tb_sap_plt2.KondisiAman as "KA", tb_sap_plt2.Ach_SAP as "AcvhSAP" FROM db_qiagent.tb_manpower_new LEFT JOIN db_qiagent.tb_sap_plt2 on tb_manpower_new.NRP = tb_sap_plt2.NRP WHERE tb_manpower_new.Posisi ="Mekanik" AND tb_manpower_new.Crew =? AND tb_sap_plt2.NRP is not null order by AcvhSAP ASC`, [section]);
     const lastUpdate = await getLastUpdate(); //console.log(lastUpdate);
 
     const result = {

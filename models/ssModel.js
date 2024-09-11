@@ -20,13 +20,7 @@ async function getSSById(id) {
 
 async function getSSStaff(section) {
   try {
-    const [rows] = await pool.execute(`
-      SELECT tb_manpower_new.NRP as mp_nrp,
-      tb_manpower_new.Nama as mp_nama,
-      tb_manpower_new.Crew as mp_crew,
-      COUNT(tb_ssplt2.NomorSS) AS "JmlSS" FROM db_qiagent.tb_manpower_new 
-      left join db_qiagent.tb_ssplt2 on tb_manpower_new.NRP = tb_ssplt2.NRP 
-      where tb_manpower_new.Posisi ="Staff" and tb_manpower_new.Status ="Aktif" and tb_manpower_new.Section=? GROUP by tb_manpower_new.Nama  ORDER BY COUNT(tb_ssplt2.NomorSS) ASC`, [section]);
+    const [rows] = await pool.execute(`SELECT tb_manpower_new.NRP as mp_nrp,tb_manpower_new.Nama as mp_nama,tb_manpower_new.Crew as mp_crew,COUNT(tb_ssplt2.NomorSS) AS "JmlSS" FROM db_qiagent.tb_manpower_new left join db_qiagent.tb_ssplt2 on tb_manpower_new.NRP = tb_ssplt2.NRP where tb_manpower_new.Posisi ="Staff" and tb_manpower_new.Status ="Aktif" and tb_manpower_new.Section=? GROUP by tb_manpower_new.Nama  ORDER BY COUNT(tb_ssplt2.NomorSS) ASC`, [section]);
     const lastUpdate = await getLastUpdate();
 
     const result = {
@@ -62,14 +56,7 @@ async function getSSMekanik(id) {
 
   try {
    const [rows] = await pool.execute(`
-    SELECT tb_manpower_new.NRP as mp_nrp,
-    tb_manpower_new.Nama as mp_nama,
-    tb_manpower_new.Crew as mp_crew,
-    COUNT(tb_ssplt2.NomorSS) AS "JmlSS"
-    FROM db_qiagent.tb_manpower_new 
-    LEFT JOIN db_qiagent.tb_ssplt2 ON tb_manpower_new.NRP = tb_ssplt2.NRP 
-    WHERE tb_manpower_new.Posisi = "Mekanik" AND tb_manpower_new.Status = "Aktif" AND tb_manpower_new.Crew = ?
-    GROUP BY tb_manpower_new.Nama ORDER BY COUNT(tb_ssplt2.NomorSS) ASC`, [section]);
+    SELECT tb_manpower_new.NRP as mp_nrp, tb_manpower_new.Nama as mp_nama, tb_manpower_new.Crew as mp_crew, COUNT(tb_ssplt2.NomorSS) AS "JmlSS" FROM db_qiagent.tb_manpower_new LEFT JOIN db_qiagent.tb_ssplt2 ON tb_manpower_new.NRP = tb_ssplt2.NRP WHERE tb_manpower_new.Posisi = "Mekanik" AND tb_manpower_new.Status = "Aktif" AND tb_manpower_new.Crew = ? GROUP BY tb_manpower_new.Nama ORDER BY COUNT(tb_ssplt2.NomorSS) ASC`, [section]);
     const lastUpdate = await getLastUpdate(); //console.log(lastUpdate);
 
     const result = {
