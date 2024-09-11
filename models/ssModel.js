@@ -9,7 +9,7 @@ async function getSSById(id) {
     const result = {
         lastUpdate: lastUpdate,
         data: rows
-    }; console.log(result);
+    }; //console.log(result);
 
     return result;
   } catch (error) {
@@ -84,6 +84,23 @@ async function getSSMekanik(id) {
     }
 }
 
+async function getAcvhSSById(id) {
+  try {
+    const [rows] = await pool.execute('SELECT COUNT(*) AS "AcvhSS" FROM tb_ssplt2 WHERE NRP = ?', [id]);
+    const lastUpdate = await getLastUpdate();
+
+    const result = {
+        lastUpdate: lastUpdate,
+        data: rows
+    }; //console.log(result);
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 async function getLastUpdate() {
     try {
         const [dataUpdate] = await pool.execute(`
@@ -98,5 +115,6 @@ async function getLastUpdate() {
 module.exports = {
   getSSById,
   getSSStaff,
-  getSSMekanik
+  getSSMekanik,
+  getAcvhSSById,
 };

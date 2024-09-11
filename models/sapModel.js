@@ -97,6 +97,23 @@ async function getSAPMekanik(id) {
     }
 }
 
+async function getAcvhSAPById(id) {
+  try {
+    const [rows] = await pool.execute('SELECT `tb_sap_plt2`.`Ach_SAP` as "AcvhSAP" FROM `db_qiagent`.`tb_manpower_new` left join `db_qiagent`.`tb_sap_plt2` on `tb_manpower_new`.`NRP` = `tb_sap_plt2`.`NRP` where `tb_manpower_new`.`NRP` =? AND `tb_manpower_new`.`Status`="Aktif"', [id]);
+    const LastUpdate = await getLastUpdate();
+
+    const result = {
+        lastUpdate: LastUpdate,
+        data: rows
+    }; //console.log(result);
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 async function getLastUpdate() {
     try {
         const [dataUpdate] = await pool.execute(`
@@ -111,5 +128,6 @@ async function getLastUpdate() {
 module.exports = {
   getSAPById,
   getSAPStaff,
-  getSAPMekanik
+  getSAPMekanik,
+  getAcvhSAPById,
 };

@@ -3,6 +3,8 @@ const { getJarvis, getJarvisStaffHandler, getJarvisMekanikHandler } = require('.
 const { getSS, getSSStaffHandler, getSSMekanikHandler } = require('../controllers/ssController');
 const { getIpeak, getIpeakStaffHandler, getIpeakMekanikHandler } = require('../controllers/ipeakController');
 const { getSAP, getSAPStaffHandler, getSAPMekanikHandler } = require('../controllers/sapController');
+const { getAllData} = require('../controllers/allFeatureController');
+
 const router = express.Router();
 
 const authenticateToken = require('../middlewares/authMiddleware');
@@ -21,5 +23,6 @@ router.get('/ipeak-mech/:id', getIpeakMekanikHandler);
 router.get('/sap/:id', getSAP);
 router.get('/sap-staff/:id', getSAPStaffHandler);
 router.get('/sap-mech/:id', getSAPMekanikHandler);
+router.get('/all-data/:id', getAllData);
 
 module.exports = router;

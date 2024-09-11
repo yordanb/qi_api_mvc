@@ -77,6 +77,23 @@ async function getIpeakMekanik(id) {
       }
 }
 
+async function getAcvhIpeakById(id) {
+  try {
+    const [rows] = await pool.execute('SELECT COUNT(*) AS "AcvhIpeak" FROM tb_ipeak WHERE NRP = ?', [id]);
+    const lastUpdate = await getLastUpdate();
+
+    const result = {
+        lastUpdate: lastUpdate,
+        data: rows
+    };  //console.log(result);
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 async function getLastUpdate() {
   try {
       const [dataUpdate] = await pool.execute(`
@@ -91,5 +108,6 @@ async function getLastUpdate() {
 module.exports = {
   getIpeakById,
   getIpeakStaff,
-  getIpeakMekanik
+  getIpeakMekanik,
+  getAcvhIpeakById,
 };

@@ -2,7 +2,7 @@ const { getJarvisById, getJarvisStaff, getJarvisMekanik } = require('../models/j
 const { formatTimestamp } = require('../utils/dateUtils');
 
 async function getJarvis(req, res) {
-  let name,nrp,jmlDoc,esictm;
+  let name,nrp,jmlDoc;
   try {
     const rows = await getJarvisById(req.params.id);
     let update = await formatTimestamp(rows.lastUpdate);
@@ -31,7 +31,7 @@ async function getJarvis(req, res) {
 
 async function getJarvisStaffHandler(req, res) {
   try {
-    const rows = await getJarvisStaff(req.params.id); console.log(rows);
+    const rows = await getJarvisStaff(req.params.id); //console.log(rows);
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
       const response = rows.data.map((row, index) => ({

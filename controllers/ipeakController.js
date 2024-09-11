@@ -4,7 +4,7 @@ const { formatTimestamp } = require('../utils/dateUtils');
 async function getIpeak(req, res) {
     let name,nrp;
   try {
-    const rows = await getIpeakById(req.params.id); console.log(rows);
+    const rows = await getIpeakById(req.params.id); //console.log(rows);
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
         name = rows.data[0].Nama;

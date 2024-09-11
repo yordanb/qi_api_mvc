@@ -95,6 +95,23 @@ async function getJarvisMekanik(id) {
       }
 }
 
+async function getAcvhJarvisById(id) {
+  try {
+    const [rows] = await pool.execute('SELECT JmlDoc AS "AcvhJarvis" FROM tb_esictm_plt2 WHERE NRP = ?', [id]); //console.log;
+    const lastUpdate = await getLastUpdate();
+
+    const result = {
+        lastUpdate: lastUpdate,
+        data: rows
+    }; //console.log(result);
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 async function getLastUpdate() {
   try {
       const [dataUpdate] = await pool.execute(`
@@ -109,5 +126,6 @@ async function getLastUpdate() {
 module.exports = {
   getJarvisById,
   getJarvisStaff,
-  getJarvisMekanik
+  getJarvisMekanik,
+  getAcvhJarvisById,
 };
