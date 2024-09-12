@@ -76,7 +76,8 @@ const getAndroidId = async (req, res) => {
             id: user.id,
             username: user.Nama,
             //role: user.Role,
-            devID: user.DeviceID
+            devID: user.DeviceID,
+            registered: true
         }; console.log(payload);
 
         // Generate token

@@ -4,7 +4,7 @@ const { getSS, getSSStaffHandler, getSSMekanikHandler } = require('../controller
 const { getIpeak, getIpeakStaffHandler, getIpeakMekanikHandler } = require('../controllers/ipeakController');
 const { getSAP, getSAPStaffHandler, getSAPMekanikHandler } = require('../controllers/sapController');
 const { getAllData} = require('../controllers/allFeatureController');
-const { getAndroidId } = require('../controllers/androidIdController');
+const { getAndroidId } = require('../controllers/androidIdController.js');
 
 const router = express.Router();
 
