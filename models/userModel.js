@@ -14,9 +14,9 @@ async function getRoleByNRP(nrp,password) {
   }
 }
 
-async function getRoleByDevID(devID) {
+async function getRoleByAndroidID(devID) {
   try {
-    const [rows] = await pool.execute(`SELECT * FROM tb_users WHERE DeviceID = ?`, [devID]);
+    const [rows] = await pool.execute(`SELECT * FROM tb_qi_users WHERE android_id = ?`, [devID]);
     if (rows.length > 0){
       return rows;
     }
@@ -29,5 +29,5 @@ async function getRoleByDevID(devID) {
 
 module.exports = {
   getRoleByNRP,
-  getRoleByDevID
+  getRoleByAndroidID
 };
