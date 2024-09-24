@@ -38,12 +38,24 @@ async function getSAPStaffHandler(req, res) {
         let update = await formatTimestamp(rows.lastUpdate);
         if (rows.data && rows.data.length > 0) {
             const response = rows.data.map((row, index) => ({
+                no: index + 1,
                 nrp: row.mp_nrp,
                 nama: row.mp_nama,
-                sap: row.AcvhSAP +" %"
+                crew: row.mp_crew,
+                sap: row.AcvhSAP
             }));
 
-            res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
+        let msgWA = `🥇🥈🥉\n*Acvhievement SAP Staff ${req.params.id}*\n`;
+        rows.data.forEach((rows, i) => {
+          let _nrp = rows.mp_nrp;
+          let _nama = rows.mp_nama;
+          let _sap = rows.AcvhSAP;
+          msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = ${_sap}%\n`;
+        });
+        msgWA += 'Last update :\n' + update + '\n';
+        msgWA += `Terima kasih atas kontribusi aktifnya.`;
+
+            res.json({ status: 200, error: null, update: update, response, wa: msgWA });
         } else {
             res.status(404).json({ error: 'Data not found' });
         }
@@ -59,12 +71,25 @@ async function getSAPMekanikHandler(req, res) {
         let update = await formatTimestamp(rows.lastUpdate);
         if (rows.data && rows.data.length > 0) {
             const response = rows.data.map((row, index) => ({
+                no: index + 1,
                 nrp: row.mp_nrp,
                 nama: row.mp_nama,
-                sap: row.AcvhSAP +" %"
+                crew: row.mp_crew,
+                sap: row.AcvhSAP
             }));
 
-            res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
+        let msgWA = `🥇🥈🥉\n*Acvhievement SAP Mekanik ${req.params.id}*\n`;
+        rows.data.forEach((rows, i) => {
+          let _nrp = rows.mp_nrp;
+          let _nama = rows.mp_nama;
+          let _sap = rows.AcvhSAP;
+          msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = ${_sap}%\n`;
+        });
+        msgWA += 'Last update :\n' + update + '\n';
+        msgWA += `Terima kasih atas kontribusi aktifnya.`;
+
+
+            res.json({ status: 200, error: null, update: update, response, wa: msgWA });
         } else {
             res.status(404).json({ error: 'Data not found' });
         }

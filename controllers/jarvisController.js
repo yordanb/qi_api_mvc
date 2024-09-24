@@ -1,4 +1,4 @@
-const { getJarvisById, getJarvisStaff, getJarvisMekanik } = require('../models/jarvisModel');
+const { getJarvisById, getJarvisStaff, getJarvisMekanik, getAcvhJarvisPlt2 } = require('../models/jarvisModel');
 const { formatTimestamp } = require('../utils/dateUtils');
 
 async function getJarvis(req, res) {
@@ -33,13 +33,31 @@ async function getJarvisStaffHandler(req, res) {
   try {
     const rows = await getJarvisStaff(req.params.id); //console.log(rows);
     let update = await formatTimestamp(rows.lastUpdate);
-    if (rows.data && rows.data.length > 0) {
+    if (rows.data && rows.data.length > 0) { //console.log(rows);
       const response = rows.data.map((row, index) => ({
+        no: index + 1,
         nrp: row.mp_nrp,
         nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
-        doc: row.JmlDoc === 0 ? 'belum akses' : row.JmlDoc + " doc"
+        crew: row.mp_posisi,
+        doc: row.JmlDoc //=== 0 ? 'belum akses' : row.JmlDoc + " doc"
       }));
-      res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
+
+      let msgWA = `🥇🥈🥉\n*Achievement Jarvis Staff ${req.params.id}*\n`;
+      rows.data.forEach((row, i) => {
+        let _nrp = row.mp_nrp;
+        let _nama = capitalizeWords(row.mp_nama, capitalizeFirstLetter);
+        let _jmlDocJarvis = row.JmlDoc;
+        if(_jmlDocJarvis != 0){
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = ${_jmlDocJarvis} doc dibaca\n`;
+          }
+          else{
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = belum akses Jarvis\n`;
+          }
+      });
+      msgWA += 'Last update :\n' + update + '\n'; 
+      msgWA += `Terima kasih atas kontribusi aktifnya.`;
+
+      res.json({ status: 200, error: null, update: update, response, wa: msgWA });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -55,11 +73,29 @@ async function getJarvisMekanikHandler(req, res) {
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
       const response = rows.data.map((row, index) => ({
+        no: index + 1,
         nrp: row.mp_nrp,
         nama: capitalizeWords(row.mp_nama, capitalizeFirstLetter),
-        doc: row.JmlDoc === 0 ? 'belum akses' : row.JmlDoc + " doc",
+        crew: row.mp_posisi,
+        doc: row.JmlDoc //=== 0 ? 'belum akses' : row.JmlDoc + " doc",
       }));
-      res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
+
+    let msgWA = `🥇🥈🥉\n*Achievement Jarvis Mekanik ${req.params.id}*\n`;
+      rows.data.forEach((row, i) => {
+        let _nrp = row.mp_nrp;
+        let _nama = capitalizeWords(row.mp_nama, capitalizeFirstLetter);
+        let _jmlDocJarvis = row.JmlDoc;
+        if(_jmlDocJarvis != 0){
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = ${_jmlDocJarvis} doc dibaca\n`;
+          }
+          else{
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = belum akses Jarvis\n`;
+          }
+      });
+      msgWA += 'Last update :\n' + update + '\n';
+      msgWA += `Terima kasih atas kontribusi aktifnya.`;
+
+      res.json({ status: 200, error: null, update: update, response, wa: msgWA });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -68,6 +104,27 @@ async function getJarvisMekanikHandler(req, res) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
+async function getJarvisAcvhPlt2Handler(req, res) {
+  try {
+    const rows = await getAcvhJarvisPlt2();
+    let update = await formatTimestamp(rows.lastUpdate);
+    if (rows.data && rows.data.length > 0) {
+      const response = rows.data.map((row, index) => ({
+        no: index + 1,
+        label: row.label,
+        value: row.value,
+      }));
+      res.json({ status: 200, error: null, update: update, kpi: "Jarvis Acvh", response});
+    } else {
+      res.status(404).json({ error: 'Data not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 
 function capitalizeWords(name, callback) {
   const result = name.toLowerCase().split(' ').map(callback).join(' ');
@@ -84,4 +141,5 @@ module.exports = {
   getJarvis,
   getJarvisStaffHandler,
   getJarvisMekanikHandler,
+  getJarvisAcvhPlt2Handler,
 };

@@ -52,7 +52,7 @@ module.exports = { login };
 
 const getAndroidId = async (req, res) => {
     const { androidID } = req.body;
-    //console.log(req.body);
+    console.log(req.body);
 
     try {
         // Query untuk mencari user berdasarkan username dan password
@@ -63,31 +63,67 @@ const getAndroidId = async (req, res) => {
         );
         */
 
-        const [rows] = await data.getRoleByAndroidID(androidID); 
+        const rows = await data.getRoleByAndroidID(androidID); 
         // Jika user tidak ditemukan
-        if (rows.length === 0) {
-            return res.status(401).json({ message: 'Username atau password salah' });
+        if (!rows || rows.length === 0){
+            return res.status(401).json({ message: 'Username atau password salah', registered: false });
         }
 
-        const user = rows;
+        const user = rows[0];
 
         // Buat payload untuk token
         const payload = {
             id: user.id,
-            username: user.Nama,
+            username: user.name,
             //role: user.Role,
-            devID: user.DeviceID,
+            devID: user.android_id,
             registered: true
-        }; console.log(payload);
+        }; //console.log(payload);
+
+        const status = 'already_registered';
 
         // Generate token
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '15m' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '6h' });
 
-        res.json({ token });
+        res.json({ status, token });
     } catch (error) {
         console.error('Database error:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-module.exports = { getAndroidId };
+const regDevice = async (req, res) => {
+    const { nrp, name, password, def_password, androidID } = req.body;
+    //console.log(req.body);
+
+    try {
+        const rows = await data.regDevByAndroidID(nrp, name, password, def_password, androidID); 
+        // Jika user tidak ditemukan
+        if (!rows || rows.length === 0) {
+            return res.status(401).json({ message: 'Username atau password salah', registered: false});
+        } //console.log(rows);
+
+        const user = rows[0];
+
+        // Buat payload untuk token
+        const payload = {
+            id: nrp,
+            username: name,
+            //role: user.Role,
+            devID: androidID,
+            registered: true
+        }; //console.log(payload);
+
+        const status = 'success';
+
+        // Generate token
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '6h' });
+
+        res.json({ status, payload, token });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports = { getAndroidId, regDevice };

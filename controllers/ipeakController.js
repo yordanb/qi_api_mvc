@@ -1,4 +1,4 @@
-const { getIpeakById, getIpeakStaff, getIpeakMekanik } = require('../models/ipeakModel');
+const { getIpeakById, getIpeakStaff, getIpeakMekanik, getAcvhIpeakPlt2 } = require('../models/ipeakModel');
 const { formatTimestamp } = require('../utils/dateUtils');
 
 async function getIpeak(req, res) {
@@ -33,12 +33,29 @@ async function getIpeakStaffHandler(req, res) {
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
       const response = rows.data.map((row, index) => ({
-        //no: index + 1,
+        no: index + 1,
         nrp: row.mp_nrp,
         nama: row.mp_nama,
-        akses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
+        crew: row.mp_crew,
+        akses: row.FrekAkses //=== 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
-      res.json({ status: 200, error: null, update: update, crew: "staff " + req.params.id, response });
+
+    let msgWA = `🥇🥈🥉\n*Achievement iPeak Staff ${req.params.id}*\n`;
+      rows.data.forEach((row, i) => {
+        let _nrp = row.mp_nrp;
+        let _nama = row.mp_nama;
+        let _jmlIpeak = row.FrekAkses;
+          if(_jmlIpeak > 0){
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = ${_jmlIpeak}x akses\n`;
+          }
+          else{
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = belum akses\n`;
+          }
+      });
+      msgWA += 'Last update :\n' + update + '\n'; 
+      msgWA += `Terima kasih atas kontribusi aktifnya.`;
+
+      res.json({ status: 200, error: null, update: update, response, wa: msgWA });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -54,11 +71,49 @@ async function getIpeakMekanikHandler(req, res) {
     let update = await formatTimestamp(rows.lastUpdate);
     if (rows.data && rows.data.length > 0) {
       const response = rows.data.map((row, index) => ({
+        no: index + 1,
         nrp: row.mp_nrp,
         nama: row.mp_nama,
-        akses: row.FrekAkses === 0 ? 'belum akses' : row.FrekAkses + 'x'
+        crew: row.mp_crew,
+        akses: row.FrekAkses //=== 0 ? 'belum akses' : row.FrekAkses + 'x'
       }));
-      res.json({ status: 200, error: null, update: update, crew: "mekanik " + req.params.id, response });
+
+    let msgWA = `🥇🥈🥉\n*Achievement iPeak Mekanik ${req.params.id}*\n`;
+      rows.data.forEach((row, i) => {
+        let _nrp = row.mp_nrp;
+        let _nama = row.mp_nama;
+        let _jmlIpeak = row.FrekAkses;
+          if(_jmlIpeak > 0){
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = ${_jmlIpeak}x akses\n`;
+          }
+          else{
+             msgWA += `${i + 1}. ${_nama}\n    (${_nrp}) = belum akses\n`;
+          }
+      });
+      msgWA += 'Last update :\n' + update + '\n';
+      msgWA += `Terima kasih atas kontribusi aktifnya.`;
+
+      res.json({ status: 200, error: null, update: update, response, wa: msgWA });
+    } else {
+      res.status(404).json({ error: 'Data not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+async function getIpeakAcvhPlt2Handler(req, res) {
+  try {
+    const rows = await getAcvhIpeakPlt2();
+    let update = await formatTimestamp(rows.lastUpdate);
+    if (rows.data && rows.data.length > 0) {
+      const response = rows.data.map((row, index) => ({
+        no: index + 1,
+        label: row.label,
+        value: row.value,
+    }));
+      res.json({ status: 200, error: null, update: update, kpi: "Ipeak Acvh", response });
     } else {
       res.status(404).json({ error: 'Data not found' });
     }
@@ -78,4 +133,5 @@ module.exports = {
   getIpeak,
   getIpeakStaffHandler,
   getIpeakMekanikHandler,
+  getIpeakAcvhPlt2Handler,
 };
