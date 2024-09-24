@@ -1,6 +1,6 @@
 const express = require('express');
 const { login } = require('../controllers/authController');
-const { getAndroidId, regDevice } = require('../controllers/androidIdController.js');
+const { getAndroidId , regDevice } = require('../controllers/androidIdController.js');
 
 const router = express.Router();
 
